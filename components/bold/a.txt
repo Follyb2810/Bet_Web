@@ -1,0 +1,28 @@
+// app/actions/register.ts (Server Action)
+import { z } from 'zod';
+
+export const registerAction = async (formData: { email: string, password: string, confirmPassword: string }) => {
+  // Define a Zod schema for input validation
+  const schema = z.object({
+    email: z.string().email("Invalid email format"),
+    password: z.string().min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string(),
+  });
+
+  try {
+    // Validate the form data using the schema
+    schema.parse(formData);
+
+    // Check if password and confirmPassword match
+    if (formData.password !== formData.confirmPassword) {
+      throw new Error("Passwords do not match");
+    }
+
+    // Handle successful registration logic here (e.g., create user in DB)
+
+    return { success: true };
+  } catch (error: any) {
+    // Return validation or other error message
+    return { success: false, error: error.message };
+  }
+};
